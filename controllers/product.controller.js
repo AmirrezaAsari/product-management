@@ -33,19 +33,19 @@ async function getById(req, res){
 
 async function create(req, res){
     try {
-        await productModel.create(
-            {
-                id : Date.now(),
-                name: "new product",
-                description: "new product for test",
-                price: 5000
-            }
-        );
-        res.writeHead(201, {'Content-Type' : 'application/json'});
-        res.write(JSON.stringify({message: "Product created successfully"}));
-        res.end();
-        
-    } catch (error) {
+        let body = '';
+        req.on("data", (chunk)=>{
+            body += chunk.toString();
+        })
+        req.on("end", async()=>{
+            const product = ({id:Date.now(),...JSON.parse(body)});
+            const result = await productModel.create(product);
+            res.writeHead(201, {'Content-Type' : 'application/json'});
+            res.write(JSON.stringify(result));
+            res.end();
+        })
+    }
+    catch (error) {
         console.log(error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.write(JSON.stringify({ error: "Internal Server Error" }));
