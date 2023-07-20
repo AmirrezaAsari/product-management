@@ -1,3 +1,4 @@
+const { parse } = require("picomatch");
 const productModel = require("../model/product.model");
 
 async function getProductController(req, res) {
@@ -53,11 +54,43 @@ async function create(req, res){
     }
 }
 
+async function update(req, res){
+    try {
+        let body = '';
+        req.on("data", (chunk)=>{
+            body += chunk.toString();
+        })
+        req.on("end", async()=>{
+            const id = req.url.split("/")[3];
+            const parsedBody = {...JSON.parse(body)};
+            const product = await productModel.findById(id);
+            if(!product){
+                res.writeHead(404, {'Content-Type' : 'application/json'});
+                res.write(JSON.stringify({message: "Product Not Found!"}));
+                res.end();
+            }else{
+                const result = await productModel.update(id, parsedBody);
+                res.writeHead(200, {'Content-Type' : 'application/json'});
+                res.write(JSON.stringify(result));
+                res.end();
+            }
+            
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify({ error: "Internal Server Error" }));
+        res.end();
+    }
+}
+
 
 const productController = {
     getProductController,
     getById,
-    create
+    create,
+    update
 }
 
 module.exports = productController;

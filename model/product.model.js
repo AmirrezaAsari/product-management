@@ -25,10 +25,27 @@ async function create(product){
     })
 }
 
+async function update(id, payLoad){
+    return new Promise((resolve, reject) => {
+        products.map(product =>{
+            if(product.id == id){
+                Object.assign(product, payLoad);
+            }
+            return product;
+        })
+        fileSystem.writeFile("./data/products.json", JSON.stringify(products), (err)=>{
+            if(err) reject(err);
+            else resolve({message:"Product Updated Successfully!"});
+        });
+
+    })
+}
+
 
 const productModel = {
     find,
     findById,
-    create
+    create,
+    update
 };
 module.exports = productModel;
