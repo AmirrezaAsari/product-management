@@ -17,6 +17,9 @@ const server = http.createServer((req, res) => {
     else if(req.url.match(/\/api\/products\/[0-9+]/) && req.method == "PUT"){
         productController.update(req,res);
     }
+    else if(req.url.match(/\/api\/products\/[0-9+]/) && req.method == "DELETE"){
+        productController.remove(req,res);
+    }
     else{
         errorHandler.notFound(res);
     }

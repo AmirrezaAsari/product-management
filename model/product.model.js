@@ -12,8 +12,8 @@ async function findById(id){
     return new Promise((resolve, reject) => {
         resolve(products.find(product => product.id == id));
     })
-
 }
+
 async function create(product){
     return new Promise((resolve, reject) => {
         products.push(product);
@@ -41,11 +41,21 @@ async function update(id, payLoad){
     })
 }
 
+async function remove(id){
+    return new Promise((resolve, reject) => {
+        const newList = products.filter(product => product.id != id);
+        fileSystem.writeFile("./data/products.json", JSON.stringify(newList), (err)=>{
+            if(err) reject(err);
+            else resolve({message:"Product Deleted Successfully!"});
+        });
+    })
+}
 
 const productModel = {
     find,
     findById,
     create,
-    update
+    update,
+    remove
 };
 module.exports = productModel;
