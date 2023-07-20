@@ -5,19 +5,24 @@ const errorHandler = require("./controllers/erorrHandler.controller");
 
 
 const server = http.createServer((req, res) => {
-    if(req.url == "/api/products" && req.method == "GET"){
+    const apiRoute = "api";
+    const productsRoute = `/${apiRoute}/products`;
+    const singleProduct = /\/api\/products\/[0-9+]/;
+    const {url, method} = req;
+
+    if(url == productsRoute && method == "GET"){
         productController.getProductController(req,res);
     }
-    else if(req.url.match(/\/api\/products\/[0-9+]/) && req.method == "GET"){
+    else if(url.match(singleProduct) && method == "GET"){
         productController.getById(req,res);
     }
-    else if(req.url == "/api/create" && req.method == "POST"){
+    else if(url == productsRoute && method == "POST"){
         productController.create(req, res);
     }
-    else if(req.url.match(/\/api\/products\/[0-9+]/) && req.method == "PUT"){
+    else if(url.match(singleProduct) && method == "PUT"){
         productController.update(req,res);
     }
-    else if(req.url.match(/\/api\/products\/[0-9+]/) && req.method == "DELETE"){
+    else if(url.match(singleProduct) && method == "DELETE"){
         productController.remove(req,res);
     }
     else{
