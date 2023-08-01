@@ -1,4 +1,4 @@
-const { parse } = require("picomatch");
+//const { parse } = require("picomatch");
 const productModel = require("../model/product.model");
 
 async function getProductController(req, res) {
@@ -39,7 +39,7 @@ async function create(req, res){
             body += chunk.toString();
         })
         req.on("end", async()=>{
-            const product = ({id:Date.now(),...JSON.parse(body)});
+            const product = ({...JSON.parse(body), createdDate: new Date()});
             const result = await productModel.create(product);
             res.writeHead(201, {'Content-Type' : 'application/json'});
             res.write(JSON.stringify(result));
